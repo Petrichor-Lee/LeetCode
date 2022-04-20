@@ -1,0 +1,73 @@
+给你两个 非空 的链表，表示两个非负的整数。它们每位数字都是按照 逆序 的方式存储的，并且每个节点只能存储 一位 数字。
+
+请你将两个数相加，并以相同形式返回一个表示和的链表。
+
+你可以假设除了数字 0 之外，这两个数都不会以 0 开头
+
+输入：l1 = [2,4,3], l2 = [5,6,4]
+输出：[7,0,8]
+解释：342 + 465 = 807.
+
+输入：l1 = [0], l2 = [0]
+输出：[0]
+
+输入：l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
+输出：[8,9,9,9,0,0,0,1]
+
+python3：
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        if l1==None:
+            return l2
+        
+        if l2==None:
+            return l1
+
+        #按位加和
+        #链表会把首位返回出去    
+
+        dummy = ListNode(0)
+        p = dummy
+
+        #为了应对加和会大于10，极限状态下9+9=18，只留8，需要一个C位
+
+        carry=0
+
+        #遍历俩个链表
+        while l1 and l2:
+            p.next=ListNode((l1.val+l2.val+carry) % 10) #除10取余
+            carry = (l1.val+l2.val+carry) //10 #除10取整
+            l1 = l1.next
+            l2 = l2.next
+            p = p.next
+
+        #当俩个链表不一样长的时候
+        #l2更长
+
+        if l2:
+            while l2:
+                p.next=ListNode((l2.val+carry) % 10) #除10取余
+                carry = (l2.val+carry) //10 #除10取整
+                l2 = l2.next
+                p = p.next
+
+        #l1更长
+
+        if l1:
+            while l1:
+                p.next=ListNode((l1.val+carry) % 10) #除10取余
+                carry = (l1.val+carry) //10 #除10取整
+                l1 = l1.next
+                p = p.next
+
+        #当最后一位的carry位置依旧为1，超出长度：
+        if carry ==1:
+            p.next = ListNode(1)
+        
+        return dummy.next
+
